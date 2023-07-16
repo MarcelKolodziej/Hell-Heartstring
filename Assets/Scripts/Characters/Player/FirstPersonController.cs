@@ -147,7 +147,7 @@ public class FirstPersonController : MonoBehaviour
                 HandleZoom();
 
             if (useFootSteps) {
-                HandleFootSteps();
+                //HandleFootSteps();
             }
        
             if (canInteract)
@@ -189,63 +189,63 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
-    private void HandleFootSteps()
-    {   // not grounded, not movement we return
-        if (!characterController.isGrounded) return;
-        if (currentInput == Vector2.zero) return;
+    //private void HandleFootSteps()
+    //{   // not grounded, not movement we return
+    //    if (!characterController.isGrounded) return;
+    //    if (currentInput == Vector2.zero) return;
 
-        footStepTimer -= Time.deltaTime;
-        if (footStepTimer <= 0)
-        {
-            if (Physics.Raycast(characterController.transform.position, Vector3.down, out RaycastHit hit, 2))
-            print(hit.collider.tag);
-            {   
-                // play audio based on tag of hit raycast
-                switch (hit.collider.tag)
-                {
-                    case "FOOTSTEPS/Wood":
-                        //footStepAudioSource.PlayOneShot(woodClips[Random.Range(0, woodClips.Length - 1)]);
-                      // AudioManager.instance.PlayeOneShot(FMODEvents.instance.footStepsSounds, characterController.transform.position);
-                        HandleSoundFootsteps();
+    //    footStepTimer -= Time.deltaTime;
+    //    if (footStepTimer <= 0)
+    //    {
+    //        if (Physics.Raycast(characterController.transform.position, Vector3.down, out RaycastHit hit, 2))
+    //        print(hit.collider.tag);
+    //        {   
+    //            // play audio based on tag of hit raycast
+    //            switch (hit.collider.tag)
+    //            {
+    //                case "FOOTSTEPS/Wood":
+    //                    //footStepAudioSource.PlayOneShot(woodClips[Random.Range(0, woodClips.Length - 1)]);
+    //                  // AudioManager.instance.PlayeOneShot(FMODEvents.instance.footStepsSounds, characterController.transform.position);
+    //                    HandleSoundFootsteps();
 
-                          break;
-                    //        case "FOOTSTEPS/Metal":
-                    //            footStepAudioSource.PlayOneShot(metalClips[Random.Range(0, metalClips.Length - 1)]);
-                    //            break;
-                    //        case "FOOTSTEPS/Grass":
-                    //            footStepAudioSource.PlayOneShot(grassClips[Random.Range(0, grassClips.Length - 1)]);
-                    //            break;
-                    default:
-                        break;
-                }
-                }
+    //                      break;
+    //                //        case "FOOTSTEPS/Metal":
+    //                //            footStepAudioSource.PlayOneShot(metalClips[Random.Range(0, metalClips.Length - 1)]);
+    //                //            break;
+    //                //        case "FOOTSTEPS/Grass":
+    //                //            footStepAudioSource.PlayOneShot(grassClips[Random.Range(0, grassClips.Length - 1)]);
+    //                //            break;
+    //                default:
+    //                    break;
+    //            }
+    //            }
 
-                footStepTimer = GetCurrentOffset;
-        }
+    //            footStepTimer = GetCurrentOffset;
+    //    }
 
-    }
-    private void HandleSoundFootsteps() {
-        //// get playback state
-        if ((characterController.isGrounded && currentInput != Vector2.zero)) {
-            {
-                // get the playback state
-                    playerFootSteps.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(characterController.transform.position));
+    //}
+    //private void HandleSoundFootsteps() {
+    //    //// get playback state
+    //    if ((characterController.isGrounded && currentInput != Vector2.zero)) {
+    //        {
+    //            // get the playback state
+    //                playerFootSteps.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(characterController.transform.position));
 
-                PLAYBACK_STATE playbackState;
-                playerFootSteps.getPlaybackState(out playbackState);
-                if (playbackState.Equals(PLAYBACK_STATE.STOPPED)) {
-                    print("play playerFootSteps");
-                    playerFootSteps.start();
-                }
-                // otherwise, stop the footsteps event
-        else if (!characterController.isGrounded ||  currentInput == Vector2.zero) 
-                    {
-                    playerFootSteps.stop(STOP_MODE.ALLOWFADEOUT);
-                    print("play Stop audio footsteps");
-                }
-            }
-        }
-    }
+    //            PLAYBACK_STATE playbackState;
+    //            playerFootSteps.getPlaybackState(out playbackState);
+    //            if (playbackState.Equals(PLAYBACK_STATE.STOPPED)) {
+    //                print("play playerFootSteps");
+    //                playerFootSteps.start();
+    //            }
+    //            // otherwise, stop the footsteps event
+    //    else if (!characterController.isGrounded ||  currentInput == Vector2.zero) 
+    //                {
+    //                playerFootSteps.stop(STOP_MODE.ALLOWFADEOUT);
+    //                print("play Stop audio footsteps");
+    //            }
+    //        }
+    //    }
+    //}
     private void HandleMovement() 
      {
         currentInput = new Vector2((isCrouching ? crouchSpeed : isSprinting ? sprintSpeed : walkSpeed) * Input.GetAxis("Vertical"), (isCrouching ? crouchSpeed : isSprinting ? sprintSpeed : walkSpeed) * Input.GetAxis("Horizontal"));
