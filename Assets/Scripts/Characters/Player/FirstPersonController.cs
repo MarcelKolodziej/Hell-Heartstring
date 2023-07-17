@@ -4,10 +4,11 @@ using UnityEngine;
 using FMOD.Studio;
 using Unity.VisualScripting;
 using UnityEngine.PlayerLoop;
+using System.Runtime.CompilerServices;
 
 public class FirstPersonController : MonoBehaviour
 {
-    public bool canMove {get; private set; } = true;
+    public bool canMove {get;  set; } = true;
     public bool isSprinting => canSprint && Input.GetKey(sprintKey); // only true if canSprint and pressing key
     public bool shouldJump =>  Input.GetKey(jumpKey) && characterController.isGrounded; // only true if press once, and is on the ground
     public bool shouldCrouch =>  Input.GetKeyDown(crouchKey) && !isInCrouchAnimation && characterController.isGrounded; // only true if not animation and is on ground
@@ -85,6 +86,14 @@ public class FirstPersonController : MonoBehaviour
     //[SerializeField] private AudioClip[] woodClips = default;
     //[SerializeField] private AudioClip[] metalClips = default;
     //[SerializeField] private AudioClip[] grassClips = default;
+
+
+    [SerializeField] private List<AudioClip> m_FootstepSounds = new List<AudioClip>();    // list of footstep sounds that will be randomly selected from.
+    [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
+    [SerializeField] private AudioClip m_LandSound;
+    private AudioSource m_AudioSource;
+    private FootstepSwapper swapper;
+
     private float footStepTimer = 0;
     private float GetCurrentOffset => isCrouching ? baseStepSpeed * crouchStepMultiplier : isSprinting ? baseStepSpeed * sprintStepMultiplier : baseStepSpeed; 
 
@@ -118,6 +127,7 @@ public class FirstPersonController : MonoBehaviour
     {
         playerCamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
+        m_AudioSource = GetComponent<AudioSource>();
         defaultYPos = playerCamera.transform.localPosition.y;
         defaultFOV = playerCamera.fieldOfView;
         Cursor.lockState = CursorLockMode.Locked;
@@ -125,13 +135,19 @@ public class FirstPersonController : MonoBehaviour
     }
     void Start()
     {
-        playerFootSteps = AudioManager.instance.CreateEventInstance(FMODEvents.instance.footStepsSounds);
+        swapper = GetComponent<FootstepSwapper>();
+        if (swapper == null) {
+            print("i dont see swapper");
+        } else
+            print(swapper);
+        //  playerFootSteps = AudioManager.instance.CreateEventInstance(FMODEvents.instance.footStepsSounds);
     }
-   
+
     void Update()
     {   
         if (canMove)
         {
+            PlayFootStepAudio();
             HandleMovement();
             HandleMouseLook();
             if (canJump && !isSliding)
@@ -147,7 +163,7 @@ public class FirstPersonController : MonoBehaviour
                 HandleZoom();
 
             if (useFootSteps) {
-                //HandleFootSteps();
+                PlayFootStepAudio();
             }
        
             if (canInteract)
@@ -188,6 +204,40 @@ public class FirstPersonController : MonoBehaviour
             currentInteractable.OnInteract();
         }
     }
+    #region Audio
+    private void PlayFootStepAudio()
+    {
+      //  swapper.CheckLayers();
+        if (!characterController.isGrounded) {
+            return;
+        }
+        // pick & play a random footstep sound from the array,
+        // excluding sound at index 0
+        int n = Random.Range(1, m_FootstepSounds.Count);
+        m_AudioSource.clip = m_FootstepSounds[n];
+        m_AudioSource.PlayOneShot(m_AudioSource.clip);
+        // move picked sound to index 0 so it's not picked next time
+        m_FootstepSounds[n] = m_FootstepSounds[0];
+        m_FootstepSounds[0] = m_AudioSource.clip;
+    }
+
+        private void PlayLandingSound() {
+        swapper.CheckLayers();
+        m_AudioSource.clip = m_LandSound;
+        m_AudioSource.Play();
+
+    }
+    public void SwapFootsteps(FootstepsCollection collection) {
+        m_FootstepSounds.Clear();
+        for (int i = 0; i < collection.FootstepSounds.Count; i++) {
+            m_FootstepSounds.Add(collection.FootstepSounds[i]);
+
+        }
+        m_JumpSound = collection.jumpSound;
+        m_LandSound = collection.landSound;
+
+    }
+
 
     //private void HandleFootSteps()
     //{   // not grounded, not movement we return
@@ -246,6 +296,7 @@ public class FirstPersonController : MonoBehaviour
     //        }
     //    }
     //}
+    #endregion
     private void HandleMovement() 
      {
         currentInput = new Vector2((isCrouching ? crouchSpeed : isSprinting ? sprintSpeed : walkSpeed) * Input.GetAxis("Vertical"), (isCrouching ? crouchSpeed : isSprinting ? sprintSpeed : walkSpeed) * Input.GetAxis("Horizontal"));
@@ -258,6 +309,7 @@ public class FirstPersonController : MonoBehaviour
         if (shouldJump)
         {
             moveDirection.y = jumpForce;
+            PlayLandingSound();
         }
     }
     private void HandleCrouch()

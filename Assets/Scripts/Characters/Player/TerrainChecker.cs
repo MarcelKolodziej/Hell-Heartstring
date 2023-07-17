@@ -36,6 +36,7 @@ public class TerrainChecker : MonoBehaviour
             }
         }
         return t.terrainData.terrainLayers[maxIndex].name;
+
     }
 
 
