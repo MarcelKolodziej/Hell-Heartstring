@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.replicastudios.link": {
+      "version": "file:D:/Assets/replica-unity-link-v0.0.1.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
+    },
     "com.unity.burst": {
       "version": "1.6.6",
       "depth": 1,
