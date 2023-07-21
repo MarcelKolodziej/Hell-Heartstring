@@ -3,28 +3,76 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
+using System.Drawing.Printing;
+using PlasticPipe.PlasticProtocol.Messages;
 
 namespace FPS.Dialogue.Editor
 {
     public class DialogueEditor : EditorWindow
         {
+            Dialogue selectedDialogue = null;
+
         [MenuItem("Window/Dialogue Editor")]
-        public static void ShowEditorWindow()
+            public static void ShowEditorWindow()
+             {
+                GetWindow(typeof(DialogueEditor), false, "Dialog Editor");
+
+            }
+
+            [OnOpenAssetAttribute(1)]
+            public static bool OnOpenAsset(int instanceID, int line)
+            {
+                Dialogue dialogue = EditorUtility.InstanceIDToObject(instanceID) as Dialogue;
+                if (dialogue != null) {
+                    ShowEditorWindow();
+                    return true;
+                } 
+                return false;
+
+            }
+
+            private void OnEnable() 
+            {
+                 Selection.selectionChanged += OnSelectionChanged;
+            }
+
+        private void OnSelectionChanged()
          {
-            GetWindow(typeof(DialogueEditor), false, "Dialog Editor");
-
-        }
-
-        [OnOpenAssetAttribute(1)]
-        public static bool OnOpenAsset(int instanceID, int line)
+                Debug.Log("On Selection Changed");
+               Dialogue newDialogue = Selection.activeObject as Dialogue;
+            if (newDialogue != null) {
+                selectedDialogue = newDialogue;
+                Repaint();
+            }
+         
+         }
+        void OnGUI()
         {
-            Dialogue dialogue = EditorUtility.InstanceIDToObject(instanceID) as Dialogue;
-            if (dialogue != null) {
-                ShowEditorWindow();
-                return true;
-            } 
-            return false;
+                if (selectedDialogue == null) 
+                {
+                    EditorGUILayout.LabelField("There's no dialogue ");
+                }
+                else
+                {
+                    foreach (DialogueNode node in selectedDialogue.GetAllNodes()) 
+                    {
+                    EditorGUI.BeginChangeCheck(); // before field changes data
 
+                    EditorGUILayout.LabelField("Node: ");
+                    string newText =  EditorGUILayout.TextField(node.text);
+                    string newUniqueID = EditorGUILayout.TextField(node.uniqueID);
+
+                    if (EditorGUI.EndChangeCheck())
+                        {
+                            Undo.RecordObject(selectedDialogue, "Update Dialogue Text");
+
+                            node.text = newText;
+                            node.uniqueID = newUniqueID;
+
+                        }
+                     }
+                }
         }
+
     }
 }

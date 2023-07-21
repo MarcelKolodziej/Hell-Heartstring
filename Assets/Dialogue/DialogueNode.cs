@@ -9,7 +9,7 @@ namespace FPS.Dialogue {
     public class DialogueNode {
         public string uniqueID;
         public string name;
-        public string Text;
+        public string text;
         public string[] children;
 
     }
