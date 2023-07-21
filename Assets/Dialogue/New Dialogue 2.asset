@@ -17,7 +17,19 @@ MonoBehaviour:
     name: 
     text: 'Have happy '
     children: []
+    position:
+      serializedVersion: 2
+      x: 30
+      y: 30
+      width: 200
+      height: 200
   - uniqueID: 
     name: 
     text: Snappy day
     children: []
+    position:
+      serializedVersion: 2
+      x: 30
+      y: 300
+      width: 200
+      height: 200

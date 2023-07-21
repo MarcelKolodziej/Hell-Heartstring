@@ -17,11 +17,29 @@ MonoBehaviour:
     name: Name 3
     text: Hello LMAO
     children: []
+    position:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
   - uniqueID: 
     name: Name 3asdasd
     text: dsdsd
     children: []
+    position:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
   - uniqueID: 
     name: Name 3
     text: 'LMAO 2 '
     children: []
+    position:
+      serializedVersion: 2
+      x: 20
+      y: 20
+      width: 20
+      height: 20

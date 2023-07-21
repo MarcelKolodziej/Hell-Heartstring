@@ -17,7 +17,19 @@ MonoBehaviour:
     name: 
     text: Helllo!!!
     children: []
-  - uniqueID: 
-    name: 
+    position:
+      serializedVersion: 2
+      x: 10
+      y: 20
+      width: 300
+      height: 300
+  - uniqueID: ASDASd
+    name: World!
     text: World
     children: []
+    position:
+      serializedVersion: 2
+      x: 10
+      y: 100
+      width: 300
+      height: 300
