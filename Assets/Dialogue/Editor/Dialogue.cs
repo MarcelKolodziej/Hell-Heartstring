@@ -18,9 +18,8 @@ namespace FPS.Dialogue
             }
         }
 #endif
-        public IEnumerable<DialogueNode> GetAllNodes()
-        {
-            return nodes;
-        }
+        public IEnumerable<DialogueNode> GetAllNodes() { return nodes; }
+
+        public DialogueNode GetRootNode() { return nodes[0]; }
     }
 }
