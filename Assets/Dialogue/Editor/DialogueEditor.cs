@@ -102,6 +102,13 @@ namespace FPS.Dialogue.Editor
                 node.text = newText;
                 node.uniqueID = newUniqueID;
             }
+
+            foreach (DialogueNode childNode in selectedDialogue.GetAllNodes(node))
+            {
+                EditorGUILayout.LabelField(childNode.text);
+            }
+
+
             GUILayout.EndArea();
         }
         private DialogueNode GetNodeAtPoint(Vector2 point) {
